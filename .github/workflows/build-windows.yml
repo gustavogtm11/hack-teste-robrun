@@ -1,4 +1,4 @@
-name: Build Windows executable
+name: Build Windows executables
 
 on:
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "**.py"
+      - "lab/**"
       - "requirements.txt"
       - "build_windows.bat"
       - ".github/workflows/build-windows.yml"
@@ -30,12 +31,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Build executable
+      - name: Build inventory lab
         run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name RobRunInventoryLab app.py
 
-      - name: Upload executable
+      - name: Build overlay lab
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name RobRunOverlayLab overlay_lab.py
+
+      - name: Upload Windows executables
         uses: actions/upload-artifact@v4
         with:
-          name: RobRunInventoryLab-Windows
-          path: dist/RobRunInventoryLab.exe
+          name: ROB-RUN-Labs-Windows
+          path: |
+            dist/RobRunInventoryLab.exe
+            dist/RobRunOverlayLab.exe
           if-no-files-found: error

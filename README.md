@@ -1,59 +1,77 @@
-# ROB RUN Inventory Security Lab
+# ROB RUN Research Labs
 
-Aplicativo desktop local para estudar conceitos de autorização de inventário e registrar testes reproduzíveis.
+Aplicativos desktop independentes para pesquisa visual e testes locais de autorização de inventário.
 
-> **Escopo:** este projeto é um laboratório independente. Ele não se conecta ao ROB RUN, não lê nem modifica processos/arquivos do jogo, não envia comandos a servidores e não interage com o Easy Anti-Cheat. O catálogo inicial contém apenas itens ilustrativos, não nomes ou IDs verificados do jogo.
+> **Limites técnicos:** os programas não se conectam ao ROB RUN, não leem capturas de tela, memória, processos ou arquivos do jogo, não enviam comandos a servidores e não interagem com o Easy Anti-Cheat. O Overlay Lab desenha entidades sintéticas em uma janela transparente/sempre no topo. Ele não é um ESP funcional para partidas reais.
 
-## Recursos da primeira versão
+## Aplicativos
 
-- Interface gráfica para Windows usando Python/Tkinter.
+### 1. ROB RUN Overlay Lab
+
+- Janela de overlay separada, sempre no topo e com transparência ajustável.
+- Demonstração de rótulos de jogadores, skeleton, distância, veículos, equipamentos e mira.
+- Cada elemento pode ser ativado/desativado no painel.
+- Janela de overlay pode ser movida pela faixa superior.
+- Usa exclusivamente dados fictícios gerados pelo próprio aplicativo.
+
+Executar pelo código-fonte:
+
+```powershell
+py -3 overlay_lab.py
+```
+
+### 2. Inventory Security Lab
+
+- Interface gráfica Windows usando Python/Tkinter.
 - Banco local SQLite, salvo em `Documentos/RobRunInventoryLab/`.
-- Catálogo de equipamentos ilustrativos.
-- Simulação de solicitação de item com validação de propriedade no lado autoritativo.
-- Teste de alegação adulterada do cliente, que deve ser rejeitada quando não há autorização.
-- Registro de auditoria e exportação CSV.
+- Catálogo ilustrativo de equipamentos.
+- Simulação de solicitações com validação de propriedade.
+- Teste de alegação adulterada do cliente, registro de auditoria e exportação CSV.
 
-## Executar pelo código-fonte
-
-Requisitos: Windows 10/11 e Python 3.10+.
+Executar pelo código-fonte:
 
 ```powershell
 py -3 app.py
 ```
 
-## Gerar o instalável/executável
+## Gerar os executáveis Windows
 
-Dê duplo clique em `build_windows.bat`. O script cria um ambiente virtual, instala PyInstaller e gera:
+No Windows 10/11 com Python 3.10 ou superior, dê duplo clique em `build_windows.bat`. Serão criados:
 
-```
-dist/RobRunInventoryLab.exe
-```
+- `dist/RobRunOverlayLab.exe`
+- `dist/RobRunInventoryLab.exe`
 
-O executável é portátil e cria o banco SQLite no primeiro uso. A compilação deve ser feita no Windows para gerar um binário Windows.
+A compilação também é executada automaticamente pelo GitHub Actions a cada alteração relevante na `main`. O pacote de saída chama-se `ROB-RUN-Labs-Windows`.
 
-## Como testar
+## Testar o Overlay Lab
 
-1. Abra o aplicativo.
+1. Abra `RobRunOverlayLab.exe`.
+2. O painel de controle e a janela de demonstração serão abertos.
+3. Ative/desative Player labels, Skeleton, Distance, Vehicles, Equipment labels e Crosshair.
+4. Ajuste a transparência.
+5. Arraste a faixa superior do overlay para reposicioná-lo.
+6. Use Mostrar/ocultar para esconder ou exibir a janela.
+
+**Importante:** os nomes, distâncias, bonecos e veículos são exemplos sintéticos. O aplicativo não detecta entidades reais no ROB RUN.
+
+## Testar o Inventory Security Lab
+
+1. Abra `RobRunInventoryLab.exe`.
 2. Selecione um item marcado como **Bloqueado**.
 3. Clique em **Simular requisição adulterada**.
-4. O resultado esperado é **REJECTED**, pois a alegação enviada pelo cliente não substitui a autorização armazenada no servidor simulado.
-5. Selecione um item marcado como **Possuído** e clique em **Solicitar item**. O simulador deve confirmar a propriedade.
-6. Exporte a auditoria CSV para guardar os resultados.
+4. Resultado esperado: **REJECTED**, pois a alegação do cliente não substitui a autorização armazenada no simulador.
+5. Selecione um item marcado como **Possuído** e clique em **Solicitar item**.
+6. Exporte a auditoria CSV.
 
 ## Estrutura
 
-- `app.py`: interface gráfica.
+- `overlay_lab.py`: overlay visual com entidades sintéticas.
+- `app.py`: interface do laboratório de inventário.
 - `lab/catalog.py`: catálogo fictício de demonstração.
 - `lab/store.py`: persistência SQLite, regras de autorização e auditoria.
-- `build_windows.bat`: geração do executável.
+- `build_windows.bat`: compilação dos dois executáveis.
+- `.github/workflows/build-windows.yml`: build automatizado para Windows.
 
-## Próximas etapas de pesquisa
+## Pesquisa responsável
 
-- Adicionar importação de catálogos obtidos de fontes públicas e autorizadas.
-- Criar cenários de teste de autorização (propriedade, desbloqueio, consistência e persistência).
-- Gerar relatórios técnicos com passos de reprodução, impacto e evidências.
-- Analisar apenas interfaces, arquivos e comportamentos que possam ser examinados sem contornar controles ou afetar partidas públicas.
-
-## Divulgação responsável
-
-Qualquer possível falha real deve ser validada somente com autorização explícita do responsável pelo serviço e reportada pelo canal oficial de suporte/segurança do desenvolvedor. Não use este laboratório para obter vantagem em partidas públicas.
+Podemos ampliar o catálogo usando recursos públicos e autorizados, documentar observações visuais e desenvolver cenários de teste em ambiente próprio. Não use os aplicativos para obter vantagem em partidas públicas ou contornar mecanismos de proteção.
